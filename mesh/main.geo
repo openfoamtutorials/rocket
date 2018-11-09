@@ -1,4 +1,10 @@
-//Inputs
+// Parameters
+// Lengths are non-dimensionalized by rocket diameter.
+nose_lc = 0.01; // mesh size at the nose.
+nose_angle = 15.0 / 180.0 * 3.14; // rad, half-angle of the nose cone.
+length = 5; // multiple of body diameter.
+domain = 100; // multiple of body diameter.
+
 blastSourceRadius = 0.1; // m
 domainDistance = 10 * blastSourceRadius; // m
 wallDistance = 5 * blastSourceRadius; // m
