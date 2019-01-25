@@ -1,10 +1,3 @@
-/*--------------------------------*- C++ -*----------------------------------*\
-| =========                 |                                                 |
-| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
-|  \\    /   O peration     | Version:  3.0.0                                 |
-|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
-|    \\/     M anipulation  |                                                 |
-\*---------------------------------------------------------------------------*/
 FoamFile
 {
     version     2.0;
@@ -13,7 +6,6 @@ FoamFile
     location    "0";
     object      k;
 }
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 #include        "inputs"
 
@@ -23,10 +15,26 @@ internalField   uniform $turbulentKE;
 
 boundaryField
 {
-    walls
+    inlet
+    {
+        type            inletOutlet;
+        inletValue      $internalField;
+        value           $internalField;
+    }
+    outlet
+    {
+        type            inletOutlet;
+        inletValue      $internalField;
+        value           $internalField;
+    }
+    aircraft
     {
         type            kqRWallFunction;
         value           $internalField;
+    }
+    tunnel
+    {
+        type            slip;
     }
     wedge0
     {
@@ -37,6 +45,3 @@ boundaryField
         type            wedge;
     }
 }
-
-
-// ************************************************************************* //

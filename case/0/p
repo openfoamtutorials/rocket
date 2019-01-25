@@ -1,19 +1,10 @@
-/*--------------------------------*- C++ -*----------------------------------*\
-| =========                 |                                                 |
-| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
-|  \\    /   O peration     | Version:  4.1                                   |
-|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
-|    \\/     M anipulation  |                                                 |
-\*---------------------------------------------------------------------------*/
 FoamFile
 {
     version     2.0;
-    format      binary;
+    format      ascii;
     class       volScalarField;
-    location    "0";
     object      p;
 }
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 #include        "inputs"
 
@@ -23,19 +14,37 @@ internalField   uniform $pressure;
 
 boundaryField
 {
+    inlet
+    {
+        type            zeroGradient;
+    }
+    outlet
+    {
+        type            waveTransmissive;
+        field           p;
+        phi             phi;
+        rho             rho;
+        psi             thermo:psi;
+        gamma           1.4;
+        fieldInf        $pressure;
+        // lInf: A measure of how far away the far-field condition should be.
+        lInf            0.5;
+        value           $internalField;
+    }
+    aircraft
+    {
+        type            zeroGradient;
+    }
+    tunnel
+    {
+        type            slip;
+    }
     wedge0
     {
         type            wedge;
-    }
-    walls
-    {
-        type            zeroGradient;
     }
     wedge1
     {
         type            wedge;
     }
 }
-
-
-// ************************************************************************* //

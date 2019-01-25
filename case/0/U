@@ -1,10 +1,3 @@
-/*--------------------------------*- C++ -*----------------------------------*\
-| =========                 |                                                 |
-| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
-|  \\    /   O peration     | Version:  3.0.0                                 |
-|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
-|    \\/     M anipulation  |                                                 |
-\*---------------------------------------------------------------------------*/
 FoamFile
 {
     version     2.0;
@@ -12,20 +5,38 @@ FoamFile
     class       volVectorField;
     object      U;
 }
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 #include        "inputs"
 
 dimensions      [0 1 -1 0 0 0 0];
 
-internalField   uniform (0 0 0);
+internalField   uniform $speed;
 
 boundaryField
 {
-    walls
+    inlet
+    {
+        type            supersonicFreestream;
+        pInf            $pressure;
+        TInf            $temperature;
+        UInf            $speed;
+        gamma           1.4; // Specific heat ratio
+        value           $internalField;
+    }
+    outlet
+    {
+        type            inletOutlet;
+        inletValue      $internalField;
+        value           $internalField;
+    }
+    aircraft
     {
         type            fixedValue;
         value           uniform (0 0 0);
+    }
+    tunnel
+    {
+        type            slip;
     }
     wedge0
     {
@@ -36,5 +47,3 @@ boundaryField
         type            wedge;
     }
 }
-
-// ************************************************************************* //
