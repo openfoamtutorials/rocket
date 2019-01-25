@@ -1,10 +1,3 @@
-/*--------------------------------*- C++ -*----------------------------------*\
-| =========                 |                                                 |
-| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
-|  \\    /   O peration     | Version:  4.x                                   |
-|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
-|    \\/     M anipulation  |                                                 |
-\*---------------------------------------------------------------------------*/
 FoamFile
 {
     version     2.0;
@@ -12,20 +5,22 @@ FoamFile
     class       dictionary;
     object      changeDictionaryDict;
 }
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 boundary
 {
     "wedge.*"
     {
         type            wedge;
-    	physicalType	wedge;
+        physicalType    wedge;
     }
-    walls
+    aircraft
     {
         type            wall;
-	    physicalType	wall;
+        physicalType    wall;
+    }
+    tunnel
+    {
+        type            slip;
+        physicalType    slip;
     }
 }
-
-// ************************************************************************* //
