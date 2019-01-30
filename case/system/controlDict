@@ -17,7 +17,7 @@ stopAt          endTime;
 
 endTime         0.003;
 
-deltaT          1e-07;
+deltaT          5e-07;
 
 // writeControl    runTime;
 writeControl	timeStep;
