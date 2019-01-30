@@ -31,11 +31,11 @@ boundaryField
         lInf            0.5;
         value           $internalField;
     }
-    aircraft
+    rocket
     {
         type            zeroGradient;
     }
-    tunnel
+    side
     {
         type            slip;
     }

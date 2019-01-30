@@ -26,11 +26,11 @@ boundaryField
         inletValue      $internalField;
         value           $internalField;
     }
-    aircraft
+    rocket
     {
         type            zeroGradient;
     }
-    tunnel
+    side
     {
         type            slip;
     }

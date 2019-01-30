@@ -6,8 +6,9 @@ FoamFile
     object      U;
 }
 
-speed             (825 0 0); // m/s
-temperature       270; // Kelvin
-pressure          76; // Pascals
+// Approximate operating conditions of Falcon 9 at an altitude of 60 km.
+speed             (2300 0 0); // m/s
+temperature       247.15; // Kelvin
+pressure          22; // Pascals
 turbulentKE       1000; // k
 turbulentEpsilon  25000; // epsilon

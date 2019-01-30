@@ -13,12 +13,12 @@ boundary
         type            wedge;
         physicalType    wedge;
     }
-    aircraft
+    rocket
     {
         type            wall;
         physicalType    wall;
     }
-    tunnel
+    side
     {
         type            slip;
         physicalType    slip;

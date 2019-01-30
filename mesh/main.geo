@@ -133,3 +133,4 @@ Physical Surface("outlet") = generated_entities[9];
 Physical Surface("side") = generated_entities[10];
 Physical Surface("inlet") = generated_entities[11];
 
+Physical Volume("volume") = generated_entities[1];

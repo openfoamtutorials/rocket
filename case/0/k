@@ -27,12 +27,12 @@ boundaryField
         inletValue      $internalField;
         value           $internalField;
     }
-    aircraft
+    rocket
     {
         type            kqRWallFunction;
         value           $internalField;
     }
-    tunnel
+    side
     {
         type            slip;
     }

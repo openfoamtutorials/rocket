@@ -27,7 +27,7 @@ boundaryField
         inletValue      $internalField;
         value           $internalField;
     }
-    aircraft
+    rocket
     {
         type            epsilonWallFunction;
         // Cmu             0.09;
@@ -35,7 +35,7 @@ boundaryField
         // E               9.8;
         value           $internalField;
     }
-    tunnel
+    side
     {
         type            slip;
     }
