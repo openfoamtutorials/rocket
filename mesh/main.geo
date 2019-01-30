@@ -10,8 +10,10 @@ fairing_diameter = 1.5; // assumed to be > 1.
 fairing_chamfer_length = 0.3; // length of chamfer that joins main body and fairing.
 fairing_lc = 2 * nose_lc;
 
-length = 5; // multiple of body diameter.
+length = 20; // distance from nose tip to tail; multiple of body diameter.
+tail_lc = 0.1; // mesh size at body tail.
 domain = 100; // multiple of body diameter.
+boundary_lc = 2;
 
 ce = 0; // id for all geometric entities (points, lines, etc.).
 
@@ -27,7 +29,9 @@ nose_end_y = (c - 1) * nose_radius;
 Point(ce++) = {nose_end_x, nose_end_y, 0, nose_lc};
 nose_end = ce - 1;
 
+loop_lines[] = {};
 Circle(ce++) = {nose_tip, nose_center, nose_end};
+loop_lines[] += ce - 1;
 
 fairing_radius = 0.5 * fairing_diameter;
 c = Cos(nose_angle);
@@ -39,6 +43,7 @@ Point(ce++) = {fillet_start_x, fillet_start_y, 0, fairing_lc};
 fillet_start = ce - 1;
 
 Line(ce++) = {nose_end, fillet_start};
+loop_lines[] += ce - 1;
 
 fillet_end_x = fairing_radius;
 s = Sin(nose_angle);
@@ -49,6 +54,7 @@ Point(ce++) = {0, fillet_end_y, 0, fairing_lc};
 fillet_center = ce - 1;
 
 Circle(ce++) = {fillet_start, fillet_center, fillet_end};
+loop_lines[] += ce - 1;
 
 chamfer_end_y = -fairing_length;
 chamfer_start_y = chamfer_end_y + fairing_chamfer_length;
@@ -56,86 +62,74 @@ Point(ce++) = {fairing_radius, chamfer_start_y, 0, fairing_lc};
 chamfer_start = ce - 1;
 
 Line(ce++) = {fillet_end, chamfer_start};
+loop_lines[] += ce - 1;
 
 Point(ce++) = {0.5, chamfer_end_y, 0, fairing_lc};
 chamfer_end = ce - 1;
 
 Line(ce++) = {chamfer_start, chamfer_end};
+loop_lines[] += ce - 1;
 
+Point(ce++) = {0.5, -length, 0, tail_lc};
+tail_outer = ce - 1;
 
-/*
-blastSourceRadius = 0.1; // m
-domainDistance = 10 * blastSourceRadius; // m
-wallDistance = 5 * blastSourceRadius; // m
-wallThickness = 0.1; // m
-wallHeight = 1; // m
+Line(ce++) = {chamfer_end, tail_outer};
+loop_lines[] += ce - 1;
 
-blastSourceLc = 0.1 * blastSourceRadius;
-wallLc = 2 * blastSourceLc;
-farLc = wallLc;
+Point(ce++) = {0, -length, 0, tail_lc};
+tail_inner = ce - 1;
 
-wedgeAngle = 5*Pi/180;
+Line(ce++) = {tail_outer, tail_inner};
+loop_lines[] += ce - 1;
 
-ce = 0;
+Point(ce++) = {0, -domain, 0, boundary_lc};
+boundary_bottom_inner = ce - 1;
 
-p = ce;
-Point(ce++) = {0, 0, 0};
-Point(ce++) = {0, -blastSourceRadius, 0, blastSourceLc};
-Point(ce++) = {blastSourceRadius, 0, 0, blastSourceLc};
-Point(ce++) = {0, blastSourceRadius, 0, blastSourceLc};
+Line(ce++) = {tail_inner, boundary_bottom_inner};
+loop_lines[] += ce - 1;
 
-bottomarc = ce;
-Circle(ce++) = {p + 1, p, p + 2};
-toparc = ce;
-Circle(ce++) = {p + 2, p, p + 3};
-sourceline = ce;
-Line(ce++) = {p + 1, p + 3};
+Point(ce++) = {domain, -domain, 0, boundary_lc};
+boundary_bottom_outer = ce - 1;
 
-p = ce;
-Point(ce++) = {0, -domainDistance, 0, farLc};
-Point(ce++) = {wallDistance, -domainDistance, 0, wallLc};
-Point(ce++) = {wallDistance, -domainDistance + wallHeight, 0, wallLc};
-Point(ce++) = {wallDistance + wallThickness, -domainDistance + wallHeight, 0, wallLc};
-Point(ce++) = {wallDistance + wallThickness, -domainDistance, 0, wallLc};
+Line(ce++) = {boundary_bottom_inner, boundary_bottom_outer};
+loop_lines[] += ce - 1;
 
-Point(ce++) = {domainDistance, -domainDistance, 0, farLc};
+Point(ce++) = {domain, domain, 0, boundary_lc};
+boundary_top_outer = ce - 1;
 
-Point(ce++) = {domainDistance, -domainDistance, 0, farLc};
-Point(ce++) = {domainDistance, domainDistance, 0, farLc};
-Point(ce++) = {0, domainDistance, 0, farLc};
+Line(ce++) = {boundary_bottom_outer, boundary_top_outer};
+loop_lines[] += ce - 1;
 
-l = ce;
-Line(ce++) = {p - 6, p};
-For k In {0:7}
-    Line(ce++) = {p + k, p + k + 1};
-EndFor
-Line(ce++) = {p + 8, p - 4};
+Point(ce++) = {0, domain, 0, boundary_lc};
+boundary_top_inner = ce - 1;
 
-sourceloop = ce;
-Line Loop(ce++) = {sourceline, -toparc, -bottomarc};
-sourcesurface = ce;
-Plane Surface(ce++) = {sourceloop};
-domainloop = ce;
-Line Loop(ce++) = {l : l + 9, -toparc, -bottomarc};
-domainsurface = ce;
-Plane Surface(ce++) = {domainloop};
+Line(ce++) = {boundary_top_outer, boundary_top_inner};
+loop_lines[] += ce - 1;
 
-Rotate {{0,1,0}, {0,0,0}, wedgeAngle/2}
+Line(ce++) = {boundary_top_inner, nose_tip};
+loop_lines[] += ce - 1;
+
+Line Loop(ce++) = loop_lines[];
+line_loop = ce - 1;
+Plane Surface(ce++) = {line_loop};
+mesh_surface = ce - 1;
+
+wedge_angle = 5.0 * Pi / 180.0;
+Rotate {{0, 1, 0}, {0, 0, 0}, 0.5 * wedge_angle}
 {
-  Surface{domainsurface, sourcesurface};
+  Surface{mesh_surface};
 }
-domainEntities[] = Extrude {{0,1,0}, {0,0,0}, -wedgeAngle}
+generated_entities[] = Extrude {{0, 1, 0}, {0, 0, 0}, -wedge_angle}
 {
-  Surface{domainsurface, sourcesurface};
+  Surface{mesh_surface};
   Layers{1};
   Recombine;
 };
 
-Physical Surface("wedge0") = {domainsurface, sourcesurface};
-Physical Surface("wedge1") = {domainEntities[{0, 12}]};
-Physical Surface("walls") = {domainEntities[{2 : 9}]};
-
-Physical Volume("blastSource") = {domainEntities[13]};
-Physical Volume(1000) = {domainEntities[1]};
-*/
+Physical Surface("wedge0") = {mesh_surface};
+Physical Surface("wedge1") = {generated_entities[0]};
+Physical Surface("rocket") = {generated_entities[{2 : 8}]};
+Physical Surface("outlet") = generated_entities[9];
+Physical Surface("side") = generated_entities[10];
+Physical Surface("inlet") = generated_entities[11];
 
